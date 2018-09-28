@@ -87,6 +87,14 @@ ROOMTYPE.ROOM = "room"
 ROOMTYPE.INTERROOM= "interoom"
 ROOMTYPE.START ="start"
 
+--------------
+--- ROOMSPECIAL
+--------------
+local ROOMSPECIAL
+ROOMSPECIAL.NONE = ""
+
+
+
 -- Si c'est une salle, quelle est sa disposition. Simple, double, special
 local ROOMDISPLAY = {}
 ROOMDISPLAY[1] = "simpleCorridor"
@@ -313,14 +321,12 @@ end
 LevelMap.MousePressed = function(x,y)
 	local distanceX
 	local distanceY
-	local w = 
-	local h 
 	-- Plutot que de chercher dans tous les niveaux je vais demander just een fonction de là ou est 
-	for i=1,#LevelMap.niveaux[savePlayer] do
-		distanceX = math.abs(x-LevelMap.niveaux[savePlayer][i].posX)
-		distanceY = math.abs(y-LevelMap.niveaux[savePlayer][i].posXY
-		if distanceX < LevelMap.niveaux[savePlayer][i].img:getWidth() && distanceY < LevelMap.niveaux[savePlayer][i].img:getHeight() then
-			LevelMap.LoadShelterMap(LevelMap.niveaux[savePlayer][i].difficulte)
+	for i=1,#LevelMap.niveaux[savePlayer.currentLevel] do
+		distanceX = math.abs(x-LevelMap.niveaux[savePlayer.currentLevel][i].posX)
+		distanceY = math.abs(y-LevelMap.niveaux[savePlayer.currentLevel][i].posXY
+		if distanceX < LevelMap.niveaux[savePlayer.currentLevel][i].img:getWidth() && distanceY < LevelMap.niveaux[savePlayer.currentLevel][i].img:getHeight() then
+			LevelMap.LoadShelterMap(LevelMap.niveaux[savePlayer.currentLevel][i].difficulte)
 			SceneManager.currentLevel = "shelterMap"
 		break
 		end
@@ -437,7 +443,39 @@ ShelterMap.GenerateEvent = function()
 end
   
   
+ShelterMap.MousePressed = function(x,y)
+	local distanceX
+	local distanceY
+	-- Plutot que de chercher dans tous les niveaux je vais demander just een fonction de là ou est 
+	for i=1,#ShelterMap.niveaux[savePlayer.currentLevel] do
+		distanceX = math.abs(x-ShelterMap.niveaux[savePlayer.currentLevel][i].posX)
+		distanceY = math.abs(y-ShelterMap.niveaux[savePlayer.currentLevel][i].posXY
+		if distanceX < ShelterMap.niveaux[savePlayer.currentLevel][i].img:getWidth() && distanceY < ShelterMap.niveaux[savePlayer.currentLevel][i].img:getHeight() then
+
+		
+			-- if talk bon un evenement aléatoire rapportant des trucs ou enlevant un crew ou ajouant
+			-- Fight bhase fight et on chage un niveau; Sachant que la liste crew à l'air d'être presistente donc faut juste générer la map avec les crew dedans et les objets .
+			if ShelterMap.niveaux[savePlayer.currentLevel][i].event == EVENT.TALK then
+			
+			
+			else if ShelterMap.niveaux[savePlayer.currentLevel][i].event == EVENT.FIGHT then
+			
+				SceneManager.currentLevel = "niveau"
+			end
+
+			
+		break
+		end
+	end
+	
+	
+
 end
+  
+end
+
+------ Gestion de Game Over
+
 
 
 
@@ -449,10 +487,15 @@ SceneManager.UpdateSceneManager = function(dt)
   if SceneManager.sceneActual == "title" then
     -- pas d'Update à faire
   elseif SceneManager.sceneActual == "niveau" then
+  
+  -- if SceneManager.niveauLoaded == true then
     UpdateCrew(dt)
     UpdateZombies(dt)
     --groupGUI:update(dt)
     testAnimation.anime(dt)
+	
+ --else on charge le niveau une fois , peut êtreu n compteur ça sera mieux  
+ --
   elseif SceneManager.sceneActual == "map" then
     
   end
@@ -967,7 +1010,24 @@ function DrawSalles2()
   
 end
 
+function GenerateSpecialRoom()
 
+	for i=1,#listSalles do
+		if listSalles[i] ~= ROOMTYPE;ROOM then
+		
+		else
+			--On peut ajouter un objet parituclier 
+			listSalles[i].isSpecial = true
+			listSalles[i].special =""
+		end
+	
+	
+	
+	end
+
+
+
+end
 
 
 
