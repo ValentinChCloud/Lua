@@ -484,6 +484,16 @@ end
 
 
 
+function ChooseNameRandomly()
+	local name = {'Alf','Bernard','Oupsy','Loki','Nobilis'}
+
+
+
+	
+	return name[math.random(0,#name)]
+end
+
+
 
 function AddCrew(pLine,pCol,speed)
   local newCrew = {}
@@ -492,9 +502,8 @@ function AddCrew(pLine,pCol,speed)
   newCrew.state = STATE.NONE
   newCrew.line =pLine
   newCrew.column =pCol
-  imgCrew:getWidth()
   newCrew.w =imgCrew:getWidth()
-
+  newCrew.name = ChooseNameRandomly()
   newCrew.h = imgCrew:getHeight()
   --newCrew.posX =GetCenterOfTile(line,column)[1]
   newCrew.posX =GetCenterOfTile(pLine,pCol)[1]
