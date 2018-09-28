@@ -181,6 +181,17 @@ STATE.DOING ="doing"
 STATE.DEAD = "dead"
 
 
+
+
+local EVENT ={}
+EVENT.NONE=""
+EVENT.TALK = "talk"
+EVENT.FIGHT = "fight"
+
+
+
+
+
 -- IMG
 imgStart = love.graphics.newImage("images/Depart.png")
 imgEasy= love.graphics.newImage("images/Easy.png")
@@ -189,10 +200,15 @@ imgHard= love.graphics.newImage("images/Hard.png")
 
 
 imgCarte = love.graphics.newImage("images/CarteXL.png")
+
+
+-- TO DELETE prablement
+--[[
 function DrawMap()
-  love.graphics.draw(imgMap,0,0)
+ love.graphics.draw(imgMap,0,0)
   love.graphics.draw(imgStart,400,160)
 end
+--]]
 
 
 
@@ -305,6 +321,7 @@ LevelMap.MousePressed = function(x,y)
 		distanceY = math.abs(y-LevelMap.niveaux[savePlayer][i].posXY
 		if distanceX < LevelMap.niveaux[savePlayer][i].img:getWidth() && distanceY < LevelMap.niveaux[savePlayer][i].img:getHeight() then
 			LevelMap.LoadShelterMap(LevelMap.niveaux[savePlayer][i].difficulte)
+			SceneManager.currentLevel = "shelterMap"
 		break
 		end
 	end
@@ -314,9 +331,7 @@ LevelMap.MousePressed = function(x,y)
 end 
 
 LevelMap.LoadShelterMap = function (difficulte)
-	
-
-
+	IniShelterMap(difficulte)
 end
 
 
@@ -333,7 +348,7 @@ end
 -- Ressemble = ShelterMap mais on regénère à chaque fois
 local ShelterMap = {}
 
-function IniShelterMap()
+function IniShelterMap(difficulte)
   ShelterMap.niveaux = {}
   ShelterMap.niveaux[1] = {}
   ShelterMap.niveaux[1][1] = {}
@@ -342,6 +357,30 @@ function IniShelterMap()
   ShelterMap.niveaux[1][1].img = imgStart
   ShelterMap.niveaux[1][1].nextLevel = {}
   
+  if difficulte == "hard" then
+	ShelterMap.malus = 30
+  elseif difficulte == "normal" then
+	ShelterMap.malus =20
+  else
+	ShelterMap.malus=10
+   end
+  
+  
+  -- URGENT
+  -- Faut que je fasse les liens et proposer qu'on puisse se déplacer d'un niveau à l'autre 
+  -- Et les liens devrait être qu'entre le niveau choisi et les prochains 
+  -- URGENT
+  
+  
+  
+  
+  -- Bon le malus sert à savoir déja si on arrive sur un fight ou un event, mais en plus le fight devrait être plus dur, c'est un peu chaud lol
+  
+  
+  
+  
+  
+
   
 ShelterMap.DrawMap = function()
     love.graphics.draw(imgCarte,0,5)
@@ -360,6 +399,7 @@ ShelterMap.CreateStep = function(currentLevel)
      local nbrStepRandom
      local oldPosY = {}
      local ramdomXPos
+	 local 
      nbrStepRandom = math.random(1,5)
      ShelterMap.niveaux[currentLevel+1] = {}
      for i=1,nbrStepRandom do
@@ -374,13 +414,29 @@ ShelterMap.CreateStep = function(currentLevel)
               ramdomYPos= ramdomYPos+math.abs(oldPosY[n]-ramdomYPos)*2 end
           end
         end
-      
         ShelterMap.niveaux[currentLevel+1][i].posX = ShelterMap.niveaux[currentLevel][1].posX -160
         ShelterMap.niveaux[currentLevel+1][i].posY = ramdomYPos
-        ShelterMap.niveaux[currentLevel+1][i].img = imgStart
+        ShelterMap.niveaux[currentLevel+1][i].img = imgStart		
+		ShelterMap.niveaux[currentLevel+1][i].event = ShelterMap.GenerateEvent()
         table.insert(oldPosY, ShelterMap.niveaux[currentLevel+1][i].posY)
+		
+		
+		
     end
   end
+
+  
+  
+  
+ShelterMap.GenerateEvent = function()
+	local luck = math.random(1,101)
+	
+	if luck <= 20+ShelterMap.malus then return EVENT.FIGHT end
+	if luck >20+ShelterMap.malus then return EVENT.TALK end
+
+end
+  
+  
 end
 
 
