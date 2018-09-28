@@ -208,6 +208,7 @@ savePlayer.resDefence =0
 local LevelMap = {}
 
 function IniLevelMap ()
+  LevelMap.nbrNiveaux = 4
   LevelMap.niveaux = {}
   LevelMap.niveaux[1] = {}
   LevelMap.niveaux[1][1] = {}
@@ -215,10 +216,24 @@ function IniLevelMap ()
   LevelMap.niveaux[1][1].posY = 160
   LevelMap.niveaux[1][1].img = imgStart
   LevelMap.niveaux[1][1].nextLevel = {}
-LevelMap.niveaux[1][1].difficulte = ""
+  LevelMap.niveaux[1][1].difficulte = ""
+  
+  
+  for i=1, LevelMap.nbrNiveaux do
+	LevelMap.CreateStep(i)
+  end
+  
+ 
+ 
+LevelMap.LastLevel = function ()
+	LevelMap.niveaux[nbrNiveaux+1]= {}
+	LevelMap.niveaux[nbrNiveaux+1].posX=0
+	LevelMap.niveaux[nbrNiveaux+1].posY=0
+	LevelMap.niveaux[nbrNiveaux+1].img = imgFinale
+end
+  
 
-
-  LevelMap.DrawMap = function()
+LevelMap.DrawMap = function()
     love.graphics.draw(imgMap,0,0)
     
     for i=1,#LevelMap.niveaux do
@@ -254,16 +269,16 @@ LevelMap.CreateStep = function(currentLevel)
         end
       
         LevelMap.niveaux[currentLevel+1][i].posX = ramdomXPos
-        LevelMap.niveaux[currentLevel+1][i].posY = LevelMap.niveaux[currentLevel][1].posY +84
-        
-          LevelMap.niveaux[currentLevel+1][i].difficulte =LevelMap.ChooseDifficulte()
-        
+        LevelMap.niveaux[currentLevel+1][i].posY = LevelMap.niveaux[currentLevel][1].posY +84 
+        LevelMap.niveaux[currentLevel+1][i].difficulte =LevelMap.ChooseDifficulte()
         if LevelMap.niveaux[currentLevel+1][i].difficulte == "easy" then LevelMap.niveaux[currentLevel+1][i].img = imgEasy end
         if LevelMap.niveaux[currentLevel+1][i].difficulte == "normal" then LevelMap.niveaux[currentLevel+1][i].img = imgNormal end
-        if LevelMap.niveaux[currentLevel+1][i].difficulte == "hard" then LevelMap.niveaux[currentLevel+1][i].img = imgHard end
-          
+        if LevelMap.niveaux[currentLevel+1][i].difficulte == "hard" then LevelMap.niveaux[currentLevel+1][i].img = imgHard end       
         
-        table.insert(oldPosX, LevelMap.niveaux[currentLevel+1][i].posX)
+		-- Pour se souvenir des anciennes posX pour le current level
+		table.insert(oldPosX, LevelMap.niveaux[currentLevel+1][i].posX)
+		
+		
     end
   end
   
@@ -279,24 +294,32 @@ LevelMap.ChooseDifficulte = function ()
   if random >80 then return "easy" end
 end
 
+LevelMap.MousePressed = function(x,y)
+	local distanceX
+	local distanceY
+	local w = 
+	local h 
+	-- Plutot que de chercher dans tous les niveaux je vais demander just een fonction de là ou est 
+	for i=1,#LevelMap.niveaux[savePlayer] do
+		distanceX = math.abs(x-LevelMap.niveaux[savePlayer][i].posX)
+		distanceY = math.abs(y-LevelMap.niveaux[savePlayer][i].posXY
+		if distanceX < LevelMap.niveaux[savePlayer][i].img:getWidth() && distanceY < LevelMap.niveaux[savePlayer][i].img:getHeight() then
+			LevelMap.LoadShelterMap(LevelMap.niveaux[savePlayer][i].difficulte)
+		break
+		end
+	end
+	
+	
 
-LevelMap.GenerateEvent = function ()
-  -- Si un evenement histoire soit un evenement de combat
-end
-    
---[[
--- LevelMap.Update = function (dt)
-    for i=1,#LevelMap.niveaux do
-      for l=1,#LevelMap.niveaux[i] do
-      if math.floor(LevelMap.niveaux[i][l].frame) >= #LevelMap.niveaux[i][l].animation then LevelMap.niveaux[i][l].frame=1 end
-       love.graphics.draw(LevelMap.niveaux[i][l].animation[frame],LevelMap.niveaux[i][l].posX,LevelMap.niveaux[i][l].posY)
-      end
-    end
-end
- ]]--
- 
+end 
 
-    
+LevelMap.LoadShelterMap = function (difficulte)
+	
+
+
+end
+
+
 
   
 end
@@ -320,7 +343,7 @@ function IniShelterMap()
   ShelterMap.niveaux[1][1].nextLevel = {}
   
   
-  ShelterMap.DrawMap = function()
+ShelterMap.DrawMap = function()
     love.graphics.draw(imgCarte,0,5)
     
     for i=1,#ShelterMap.niveaux do
